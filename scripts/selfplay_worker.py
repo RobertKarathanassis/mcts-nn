@@ -5,10 +5,16 @@ Self-play worker
 Generates AlphaZero style training data (state, π, z) and stores it in
 run/selfplay/ as compressed .npz files.
 
+Run a single worker:
+
     python scripts/selfplay_worker.py --games 20 --gpu 0 --id 0
+
+Or spawn multiple workers from one invocation:
+
+    python scripts/selfplay_worker.py --games 20 --gpu 0 --workers 4
 """
 from __future__ import annotations
-import argparse, pathlib, time, random
+import argparse, pathlib, time, random, multiprocessing
 import numpy as np
 import torch, chess
 
@@ -104,14 +110,30 @@ def main() -> None:
     pa = argparse.ArgumentParser()
     pa.add_argument("--games", type=int, default=10)
     pa.add_argument("--gpu",   type=int, default=-1)   # -1 = CPU
-    pa.add_argument("--id",    type=int, default=0)    # worker id
+    pa.add_argument("--id",    type=int, default=0)    # worker id offset
+    pa.add_argument("--workers", type=int, default=1,
+                    help="number of worker processes")
     args = pa.parse_args()
 
-    device = torch.device(f"cuda:{args.gpu}" if args.gpu >= 0 else "cpu")
-    start  = time.time()
-    for g in range(args.games):
-        play_game(args.id, g, device)
-    print(f"[worker {args.id}] finished {args.games} games in {time.time()-start:.1f}s")
+    device_str = f"cuda:{args.gpu}" if args.gpu >= 0 else "cpu"
+
+    def run_worker(wid: int) -> None:
+        device = torch.device(device_str)
+        start = time.time()
+        for g in range(args.games):
+            play_game(wid, g, device)
+        print(
+            f"[worker {wid}] finished {args.games} games in {time.time()-start:.1f}s"
+        )
+
+    procs = []
+    for i in range(args.workers):
+        wid = args.id + i
+        p = multiprocessing.Process(target=run_worker, args=(wid,))
+        p.start()
+        procs.append(p)
+    for p in procs:
+        p.join()
 
 if __name__ == "__main__":
     main()
