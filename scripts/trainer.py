@@ -63,7 +63,8 @@ class ReplayBuffer:
 
 # ─── loss helpers ───────────────────────────────────────────────────────
 def policy_loss(logits: torch.Tensor, target_pi: torch.Tensor) -> torch.Tensor:
-    return F.cross_entropy(logits, target_pi.argmax(dim=1))
+    log_p = F.log_softmax(logits, dim=1)
+    return -(target_pi * log_p).sum(dim=1).mean()
 
 def value_loss(pred_v: torch.Tensor, target_z: torch.Tensor) -> torch.Tensor:
     return F.mse_loss(pred_v.squeeze(-1), target_z)
