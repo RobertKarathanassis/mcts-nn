@@ -9,7 +9,7 @@ Run:
     python -m scripts.trainer --gpu 0
 """
 from __future__ import annotations
-import argparse, pathlib, time, random, gzip, pickle, glob, os
+import argparse, pathlib, time, random, gzip, pickle, glob, os, zipfile
 from collections import deque
 from typing import Tuple
 
@@ -46,7 +46,11 @@ class ReplayBuffer:
     def __len__(self) -> int: return len(self.states)
 
     def add_game(self, npz_file: pathlib.Path) -> None:
-        data = np.load(npz_file)
+        try:
+            data = np.load(npz_file)
+        except (OSError, zipfile.BadZipFile) as e:
+            print(f"Warning: could not read {npz_file}: {e}")
+            return
         s, p, z = data["s"], data["p"], data["z"]
         for si, pi, zi in zip(s, p, z):
             self.states.append(torch.from_numpy(si))
