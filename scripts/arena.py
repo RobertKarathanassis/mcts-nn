@@ -8,7 +8,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import List, Tuple
 
 import torch, chess
-from mcts.mcts import MCTS
+from mcts import MCTS
 from network.network import JohnNet
 from data import move_encoder as enc
 
