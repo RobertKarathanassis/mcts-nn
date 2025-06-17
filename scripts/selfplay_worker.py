@@ -101,9 +101,11 @@ def play_game(worker_id: int, game_id: int, device: torch.device) -> None:
     z = np.array([z_final if t == turns[0] else -z_final for t in turns],
                  dtype=np.float32)
 
-    out = SELFPLAY_DIR / f"w{worker_id}_g{game_id:06d}.npz"
-    np.savez_compressed(out, s=np.stack(states), p=np.stack(pis), z=z)
-    print(f"[worker {worker_id}] saved {out.name}  plies={ply}")
+    final = SELFPLAY_DIR / f"w{worker_id}_g{game_id:06d}.npz"
+    tmp   = SELFPLAY_DIR / f".tmp_w{worker_id}_g{game_id:06d}.npz"
+    np.savez_compressed(tmp, s=np.stack(states), p=np.stack(pis), z=z)
+    tmp.rename(final)
+    print(f"[worker {worker_id}] saved {final}  plies={ply}")
 
 # ── CLI entry-point ────────────────────────────────────────────────────
 def main() -> None:
