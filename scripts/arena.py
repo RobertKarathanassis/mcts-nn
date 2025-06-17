@@ -53,7 +53,7 @@ def play_single_game(gid: int, gpu: int, sims: int,
     while not board.is_game_over():
         net = new_net if ((board.turn == chess.WHITE) == new_white) else best_net
         visits = MCTS(net, sims=sims).run(board)
-        move_idx = max(visits, key=visits.get)
+        move_idx = max(visits, key=lambda k: visits[k])
         board.push(enc.decode_index(board, move_idx))
     return board.result(), new_white
 
