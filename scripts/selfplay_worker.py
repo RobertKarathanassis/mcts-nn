@@ -12,7 +12,7 @@ import numpy as np
 import torch, chess
 
 from data import board, move_encoder as enc
-from mcts.mcts import MCTS
+from mcts import MCTS
 from network.network import JohnNet
 
 # ── runtime dirs ───────────────────────────────────────────────────────
