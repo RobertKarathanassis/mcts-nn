@@ -26,7 +26,7 @@ class JohnNet(nn.Module):
     - Policy head: logits over all possible moves
     - Value head: scalar win/draw/loss prediction
     """
-    def __init__(self, in_channels=20, channels=128, num_blocks=5, policy_size=4672):
+    def __init__(self, in_channels=20, channels=192, num_blocks=8, policy_size=4672):
         super().__init__()
 
         # Initial conv layer to project input to deeper feature space

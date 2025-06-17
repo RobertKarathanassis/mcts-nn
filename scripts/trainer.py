@@ -8,6 +8,7 @@ Consumes self-play games, trains JohnNet, and checkpoints regularly.
 Run:
     python -m scripts.trainer --gpu 0
 """
+
 from __future__ import annotations
 import argparse, pathlib, time, random, gzip, pickle, glob, os, zipfile
 from collections import deque
@@ -29,11 +30,11 @@ BEST_NET    = ROOT / "best.pth"
 CKPT_D.mkdir(parents=True, exist_ok=True)
 
 # ─── hyper-params ───────────────────────────────────────────────────────
-BUFFER_CAP          = 200_000     # positions
-BATCH_SIZE          = 256
-LR_INITIAL          = 1e-3
+BUFFER_CAP          = 300_000     # positions
+BATCH_SIZE          = 512
+LR_INITIAL          = 7e-4
 WD                 = 1e-4
-CHECKPOINT_EVERY_G  = 500          # games
+CHECKPOINT_EVERY_G  = 100         # games
 DEVICE_DEFAULT      = "cuda:0"
 
 # ─── replay buffer ──────────────────────────────────────────────────────

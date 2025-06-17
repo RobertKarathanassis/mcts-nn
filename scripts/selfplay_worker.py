@@ -22,10 +22,10 @@ BEST_NET_PATH = ROOT / "best.pth"
 SELFPLAY_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── hyper-params ───────────────────────────────────────────────────────
-NUM_SIMS    = 30
+NUM_SIMS    = 100
 TEMP_CUTOFF = 30
-DIRICH_A    = 0.3
-DIRICH_EPS  = 0.25
+DIRICH_A    = 0.15
+DIRICH_EPS  = 0.10
 
 # ── figure out next unused game idx for a worker ───────────────────────
 def next_game_idx(worker_id: int) -> int:
